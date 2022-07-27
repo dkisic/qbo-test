@@ -21,7 +21,7 @@ using Abp.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.WebEncoders;
 using Newtonsoft.Json.Serialization;
-
+using QBOTest.QuickBooks;
 
 namespace QBOTest.Web.Startup
 {
@@ -64,6 +64,8 @@ namespace QBOTest.Web.Startup
             });
             
             services.AddScoped<IWebResourceManager, WebResourceManager>();
+
+            services.Configure<QuickBooksConfig>(_appConfiguration.GetSection("QuickBooksConfig"));
 
             services.AddSignalR();
 

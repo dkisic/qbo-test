@@ -1,0 +1,141 @@
+﻿@using QBOTest.Web.Startup
+@using QBOTest.Web.Models.QuickBooks
+
+@model QuickBooksViewModel
+
+@{
+    ViewBag.Title = "QuickBooks";
+    ViewBag.CurrentPageName = PageNames.QuickBooks;
+}
+
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0 text-dark">@L("HomePage")</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-custom bgi-no-repeat gutter-b card-stretch" style="background-color: #1B283F;background-position: right 10px top 10px;background-size: 25%;background-image: url(/Common/qb_thumb.png); background-repeat: no-repeat">
+            <div class="card-body px-4 px-md-10">
+                <div class="p-4 font-weight-bolder">
+                    <h3 class="text-white my-7">@L(Model.IsQuickBooksConnected ? "SyncWithQuickBooks" : "ConnectWithQuickBooks")</h3>
+                    <p class="text-muted font-size-h6 mb-7">
+                        @L("QuickBooksMessage")
+                    </p>
+
+                    <p class="text-muted font-size-lg">
+                        @L("QuickBooksTwoWay")
+                    </p>
+
+                    <ul class="text-muted font-size-lg mb-7">
+                        <li>Partners</li>
+                        <li>Items</li>
+                    </ul>
+
+                    @if (Model.IsQuickBooksConnected)
+                    {
+                        <a href="#" class="btn btn-danger fw-bold px-6 py-3 d-inline-flex align-items-center btn-lg me-5" id="QuickBooksSyncButton">
+                            <img alt="Pic" src="~/Common/qb_thumb.png" style="width: 30px;height: 30px;" />
+                            <div class="d-flex flex-column text-right ps-3">
+                                <span class="font-weight-bolder font-size-lg text-uppercase">@L("Sync")</span>
+                            </div>
+                        </a>
+                        <a class="btn btn-warning font-weight-bold px-6 py-3 btn-lg me-5" id="QuickBooksDisconnectButton">
+                            <div class="d-flex flex-column text-right ps-3">
+                                <span class="font-weight-bolder font-size-lg text-uppercase">@L("Disconnect")</span>
+                            </div>
+                        </a>
+
+                        <br />
+
+                        <br />
+
+                        <span class="text-muted font-size-lg">@L("QuickBooksWarning")</span>
+                    }
+                    else
+                    {
+                        <a asp-action="Connect" asp-controller="QuickBooks" class="btn btn-danger font-weight-bold px-6 py-3 d-inline-flex align-items-center btn-lg me-5">
+                            <img alt="Pic" src="~/Common/qb_thumb.png" style="width: 30px;height: 30px;" />
+                            <div class="d-flex flex-column text-right ps-3">
+                                <span class="font-weight-bolder font-size-lg text-uppercase">@L("Connect")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+
+                @if (Model.IsQuickBooksConnected)
+                {
+                    <h3 class="text-white my-7">@L("QuickBooksSyncLogs")</h3>
+
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table m-0">
+                                    <thead>
+                                        <tr>
+                                            <th>@L("EntityName")</th>
+                                            <th>@L("EntityType")</th>
+                                            <th>@L("SyncAction")</th>
+                                            <th>@L("Direction")</th>
+                                            <th>@L("Status")</th>
+                                            <th>@L("Description")</th>
+                                            <th>@L("CreationTime")</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var log in Model.Logs.OrderByDescending(x => x.CreationTime))
+                                        {
+                                            <tr>
+                                                <td>@log.EntityName</td>
+                                                <td>@log.SyncEntityLocalized</td>
+                                                <td>@log.SyncActionLocalized</td>
+                                                <td>@log.SyncDirectionLocalized</td>
+                                                <td>@log.SyncStatusLocalized</td>
+                                                <td>@log.Description</td>
+                                                <td>@log.CreationTime.ToShortDateString() @log.CreationTime.ToShortTimeString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $('#QuickBooksSyncButton').click(function(e) {
+            e.preventDefault();
+
+            abp.services.app.quickBooksSync.sync().done(function() {
+                abp.message.success(abp.localization.localize("QuickBooksSyncMessage", "QBOTest"));
+            });
+        });
+
+        $('#QuickBooksDisconnectButton').click(function(e) {
+            e.preventDefault();
+
+            abp.message.confirm(
+                abp.localization.localize('QuickBooksDisconnectMessage', "QBOTest"),
+                abp.localization.localize('AreYouSure', "QBOTest"),
+                function(isConfirmed) {
+                    if (isConfirmed) {
+                        $.get(abp.appPath + "QuickBooks/Disconnect", function() {
+                            location.reload();
+                        });
+                    }
+                }
+            );
+        });
+    </script>
+}

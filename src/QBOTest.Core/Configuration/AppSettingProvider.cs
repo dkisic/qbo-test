@@ -9,7 +9,9 @@ namespace QBOTest.Configuration
         {
             return new[]
             {
-                new SettingDefinition(AppSettingNames.UiTheme, "red", scopes: SettingScopes.Application | SettingScopes.Tenant | SettingScopes.User, clientVisibilityProvider: new VisibleSettingClientVisibilityProvider())
+                new SettingDefinition(AppSettingNames.UiTheme, "red", scopes: SettingScopes.Application | SettingScopes.Tenant | SettingScopes.User, clientVisibilityProvider: new VisibleSettingClientVisibilityProvider()),
+                new SettingDefinition(AppSettingNames.QuickBooksRealmId, null, scopes: SettingScopes.Tenant, isEncrypted: true),
+                new SettingDefinition(AppSettingNames.IsQBOConnected, "false", scopes: SettingScopes.Tenant)
             };
         }
     }

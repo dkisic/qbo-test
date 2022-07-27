@@ -9,7 +9,7 @@ namespace QBOTest.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Home", "QuickBooks");
         }
     }
 }

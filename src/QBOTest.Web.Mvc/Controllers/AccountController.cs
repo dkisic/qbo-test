@@ -371,12 +371,12 @@ namespace QBOTest.Web.Controllers
 
         public ActionResult RedirectToAppHome()
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Home", "QuickBooks");
         }
 
         public string GetAppHomeUrl()
         {
-            return Url.Action("Index", "About");
+            return Url.Action("Home", "QuickBooks");
         }
 
         #endregion
