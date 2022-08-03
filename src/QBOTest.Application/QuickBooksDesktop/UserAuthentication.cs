@@ -21,19 +21,19 @@ namespace QBOTest.QuickBooksDesktop
 
 		public object AuthenticateUser(string username, string password)
 		{
-			string user = "";
+			
 			try
 			{
-				user = GetTicket(username, password);
+				GetTicketAsync(username, password).ToString();
 			}
 			catch (Exception e2)
 			{
 				// A temporary exception, retry later
-				 new AuthenticateException(e2.ToString());
-				
+				new AuthenticateException(e2.ToString());
+
 			}
 
-			return user;
+			return userTicket;
 		}
 
 		/// <summary>
@@ -42,15 +42,18 @@ namespace QBOTest.QuickBooksDesktop
 		/// <param name="username"></param>
 		/// <param name="password"></param>
 		/// <returns>string</returns>
-		public string GetTicket(string username, string password)
+		public async Task<string> GetTicketAsync(string username, string password)
 		{
 			if (userTicket != null) return userTicket;
-			if (!_userAppService.ValidateUser(username, password)) { return null; }
+			if (!(await _userAppService.ValidateUser(username, password)))
+			{
+				return null;
+			}
 			else
 			{
 				userTicket = Guid.NewGuid().ToString();
 			}
-			
+
 			return userTicket;
 		}
 

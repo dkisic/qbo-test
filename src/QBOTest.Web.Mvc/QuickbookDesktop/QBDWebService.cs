@@ -12,7 +12,7 @@ namespace QBOTest.Web.QuickbookDesktop
 	public class QBDWebService : IQBDWebService
 	{
 		//Private Variables
-		private readonly IUserAppService _userAppService;
+		//private readonly IUserAppService _userAppService;
 		private readonly IUserAuthentication _authentication;
 
 
@@ -24,9 +24,9 @@ namespace QBOTest.Web.QuickbookDesktop
 
 
 
-		public QBDWebService(IUserAppService userAppService, IUserAuthentication authentication)
+		public QBDWebService(/*IUserAppService userAppService,*/ IUserAuthentication authentication)
 		{
-			_userAppService = userAppService;
+			//_userAppService = userAppService;
 			_authentication = authentication;
 
 		}

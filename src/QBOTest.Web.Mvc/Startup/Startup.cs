@@ -70,7 +70,7 @@ namespace QBOTest.Web.Startup
             services.AddScoped<IWebResourceManager, WebResourceManager>();
 
             services.AddSoapCore();
-            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAppService>(), x.GetRequiredService<IUserAuthentication>()));
+            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAuthentication>()));
             services.AddMvc();
 
             services.AddSoapExceptionTransformer((ex) => ex.Message);
