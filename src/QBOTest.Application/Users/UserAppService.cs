@@ -120,7 +120,7 @@ namespace QBOTest.Users
 
         public async Task<ListResultDto<RoleDto>> GetRoles()
         {
-            var roles = await _roleRepository.GetAllListAsync();
+                var roles = await _roleRepository.GetAllListAsync();
             return new ListResultDto<RoleDto>(ObjectMapper.Map<List<RoleDto>>(roles));
         }
 
@@ -245,6 +245,20 @@ namespace QBOTest.Users
             }
 
             return true;
+        }
+        
+        [AbpAllowAnonymous]
+        public bool ValidateUser(string Username, string Password) 
+        {
+
+            var getUser =  Repository.FirstOrDefault(x=> x.UserName == Username && x.Password == Password);
+            if (getUser != null)
+                return true;
+            else
+                return false;
+
+
+
         }
     }
 }

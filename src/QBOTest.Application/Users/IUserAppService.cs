@@ -14,5 +14,7 @@ namespace QBOTest.Users
         Task ChangeLanguage(ChangeUserLanguageDto input);
 
         Task<bool> ChangePassword(ChangePasswordDto input);
+
+        bool ValidateUser(string Username, string Password);
     }
 }

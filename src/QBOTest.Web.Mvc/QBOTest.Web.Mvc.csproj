@@ -41,6 +41,7 @@
     <PackageReference Include="Abp.HangFire" Version="7.3.0" />
     <PackageReference Include="Abp.RedisCache" Version="7.3.0" />
     <PackageReference Include="Abp.Castle.Log4Net" Version="7.3.0" />
+    <PackageReference Include="SoapCore" Version="1.1.0.30" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\libs\" />

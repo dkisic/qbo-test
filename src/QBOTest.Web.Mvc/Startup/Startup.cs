@@ -22,6 +22,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.WebEncoders;
 using Newtonsoft.Json.Serialization;
 using QBOTest.QuickBooks;
+using SoapCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using QBOTest.Web.QuickbookDesktop;
+using QBOTest.Users;
 
 namespace QBOTest.Web.Startup
 {
@@ -65,6 +69,12 @@ namespace QBOTest.Web.Startup
             
             services.AddScoped<IWebResourceManager, WebResourceManager>();
 
+            services.AddSoapCore();
+            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAppService>(), x.GetRequiredService<IUserAuthentication>()));
+            services.AddMvc();
+
+            services.AddSoapExceptionTransformer((ex) => ex.Message);
+
             services.Configure<QuickBooksConfig>(_appConfiguration.GetSection("QuickBooksConfig"));
 
             services.AddSignalR();
@@ -80,6 +90,9 @@ namespace QBOTest.Web.Startup
                         )
                 )
             );
+
+           
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -111,6 +124,13 @@ namespace QBOTest.Web.Startup
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
             });
+
+          
+
+            app.UseEndpoints(endpoints => {
+                endpoints.UseSoapEndpoint<IQBDWebService>("/QBDService.asmx", new SoapEncoderOptions(), SoapSerializer.DataContractSerializer);
+            });
+            
         }
     }
 }
