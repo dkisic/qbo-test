@@ -26,6 +26,11 @@ using SoapCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using QBOTest.Web.QuickbookDesktop;
 using QBOTest.Users;
+using Abp.Domain.Repositories;
+using QBOTest.Partners;
+using System.ServiceModel.Channels;
+using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace QBOTest.Web.Startup
 {
@@ -70,7 +75,7 @@ namespace QBOTest.Web.Startup
             services.AddScoped<IWebResourceManager, WebResourceManager>();
 
             services.AddSoapCore();
-            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAuthentication>()));
+            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAuthentication>(), x.GetRequiredService<IRepository<Partner, Guid>>()));
             services.AddMvc();
 
             services.AddSoapExceptionTransformer((ex) => ex.Message);
@@ -125,12 +130,30 @@ namespace QBOTest.Web.Startup
                 endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
             });
 
-          
 
-            app.UseEndpoints(endpoints => {
-                endpoints.UseSoapEndpoint<IQBDWebService>("/QBDService.asmx", new SoapEncoderOptions(), SoapSerializer.DataContractSerializer);
-            });
-            
-        }
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.UseSoapEndpoint<IQBDWebService>("/QBDService.asmx", new SoapEncoderOptions(), SoapSerializer.XmlSerializer);
+			});
+
+			//var transportBinding = new HttpTransportBindingElement();
+			//var textEncodingBinding = new TextMessageEncodingBindingElement(MessageVersion.Soap11, System.Text.Encoding.UTF8);
+			//var customBinding = new CustomBinding(transportBinding, textEncodingBinding);
+			//app.UseEndpoints(endpoints => {
+			//    endpoints.UseSoapEndpoint<IQBDWebService>(opt=> {
+			//        opt.Path = "/QBDService.asmx";
+			//        opt.AdditionalEnvelopeXmlnsAttributes = new Dictionary<string, string>() {
+
+			//        { "xsi","http://www.w3.org/2001/XMLSchema-instance"},
+			//        {"xsd","http://www.w3.org/2001/XMLSchema" }
+			//        };
+			//        opt.SoapSerializer = SoapSerializer.DataContractSerializer;
+			//        opt.EncoderOptions = [MessageVersion.Soap11];
+
+			//    });
+			//});
+
+		}
     }
 }

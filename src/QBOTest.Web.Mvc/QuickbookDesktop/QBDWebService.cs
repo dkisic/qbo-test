@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Abp.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QBOTest.Partners;
 using QBOTest.QuickBooksDesktop;
 using QBOTest.Users;
 using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace QBOTest.Web.QuickbookDesktop
 {
@@ -12,24 +15,25 @@ namespace QBOTest.Web.QuickbookDesktop
 	public class QBDWebService : IQBDWebService
 	{
 		//Private Variables
-		//private readonly IUserAppService _userAppService;
 		private readonly IUserAuthentication _authentication;
+		public readonly IRepository<Partner, Guid> _partnerRepository;
+		private readonly IController controller;
+		public QBDWebService(IUserAuthentication authentication, IRepository<Partner, Guid> partnerRepository)
+		{
+			_partnerRepository = partnerRepository;
+			_authentication = authentication;
+			controller = new RequestController(_partnerRepository);
+		}
 
-
-		//private readonly BaseClass bClass = new BaseClass();
-		//private readonly IController controller = new RequestController();
+		private readonly BaseClass bClass = new BaseClass();
+		
 		private readonly ISessionPool sessionPool = new MemorySession();
 
 		private readonly IContainer components = null;
 
 
 
-		public QBDWebService(/*IUserAppService userAppService,*/ IUserAuthentication authentication)
-		{
-			//_userAppService = userAppService;
-			_authentication = authentication;
-
-		}
+		
 
 
 
@@ -42,10 +46,10 @@ namespace QBOTest.Web.QuickbookDesktop
 		}
 
 
-		
+
 		public string clientVersion(string strVersion)
 		{
-			
+
 			string retVal = null;
 			var recommendedVersion = 2.0;
 			var supportedMinVersion = 2.0;
@@ -54,14 +58,14 @@ namespace QBOTest.Web.QuickbookDesktop
 				retVal = "E:You need to upgrade your QBWebConnector";
 			else if (suppliedVersion < recommendedVersion)
 				retVal = "W:We recommend that you upgrade your QBWebConnector";
-			
+
 			return retVal;
 		}
 
 
 		public string[] authenticate(string strUserName, string strPassword)
 		{
-			
+
 			var authReturn = InitAuthResponse();
 			var sess = new QuickBookSession(authReturn[0], strUserName, strPassword);
 			try
@@ -98,9 +102,82 @@ namespace QBOTest.Web.QuickbookDesktop
 			}
 
 			if (sess != null) sessionPool.Put(authReturn[0], sess);
-			
+
 			return authReturn;
 		}
+
+
+		public string sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName,
+		string qbXMLCountry, int qbXMLMajorVers, int qbXMLMinorVers)
+		{
+			var sess = sessionPool.GetCache(ticket);
+			var request = "";
+
+			try
+			{
+
+				var isImport = false;
+
+				sess.DefineSession(strCompanyFileName, strHCPResponse, qbXMLCountry, (short)qbXMLMajorVers,
+					(short)qbXMLMinorVers);
+
+				//if (!string.IsNullOrEmpty(strHCPResponse) && isImport == false)
+				//	CheckInvoicesFromDataSetting(
+				//		sess); //when strHCPResponse is not null its mean its first call so get Data by date range for syn.
+
+
+				//if (isImport)
+					request = controller.GetNextActionForImport(sess);
+				//else
+					//request = controller.GetNextAction(sess);
+
+
+				sessionPool.Put(ticket, sess);
+
+
+
+				return request;
+			}
+			catch (Exception exp)
+			{
+				sess.SetProperty("LastError", exp.Message);
+				return request;
+			}
+		}
+
+
+		public async Task<int> receiveResponseXMLAsync(string ticket, string response, string hresult, string message)
+		{
+			var sess = sessionPool.GetCache(ticket);
+			try
+			{
+				if (sess != null && CheckHResult(hresult))
+				{
+					sess.SetProperty("LastError", message);
+					return -101;
+				}
+
+
+				var isImport = false;
+				int retVal;
+
+				retVal = await controller.ProcessLastActionForImportAsync(sess, response);
+				//retVal = isImport
+				//	? controller.ProcessLastActionForImportAsync(sess, response)
+				//	: controller.ProcessLastAction(sess, response);
+				sessionPool.Put(ticket, sess);
+
+
+
+				return retVal;
+			}
+			catch (Exception exp)
+			{
+				sess?.SetProperty("LastError", message);
+				return -101;
+			}
+		}
+
 
 		private string ParseForVersion(string input)
 		{
@@ -139,8 +216,16 @@ namespace QBOTest.Web.QuickbookDesktop
 
 			if (ticket != null) authRet[0] = ticket;
 			if (cfn != null) authRet[1] = cfn;
+			authRet[1] = "";
 			authRet[3] = "3600"; //will override the user auto update time to 1 hours
 			return authRet;
+		}
+
+		private bool CheckHResult(string hResult)
+		{
+			if (hResult.Equals(""))
+				return false;
+			return true;
 		}
 	}
 }

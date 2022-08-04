@@ -9,7 +9,7 @@ namespace QBOTest.QuickBooksDesktop.Dto
 	public class UtilityClass
 	{
 		public string RequestId { get; set; }
-		public long EntityID { get; set; }
+		public Guid EntityID { get; set; }
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public string QbDesktopId { get; set; }
