@@ -32,6 +32,15 @@ namespace QBOTest.Web.Startup
                 )
                 .AddItem(
                     new MenuItemDefinition(
+                        PageNames.QuickBooksDesktop,
+                        L("QuickBooksDesktop"),
+                        url: "QBDesktop/Index",
+                        icon: "fas fa-file",
+                        requiresAuthentication: true
+                    )
+                )
+                .AddItem(
+                    new MenuItemDefinition(
                         PageNames.Home,
                         L("HomePage"),
                         url: "",

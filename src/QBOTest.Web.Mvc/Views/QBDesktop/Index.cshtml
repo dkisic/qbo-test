@@ -1,0 +1,36 @@
+﻿@using QBOTest.Web.Startup
+@{
+    ViewBag.CurrentPageName = PageNames.QuickBooksDesktop;
+    ViewBag.Title = L("QuickBooksDesktop");
+}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 class="m-0 text-dark">@L("QuickBooksDesktop")</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                      
+
+                        <h3>Download WebConnector file to integrate your App with your QuickBooks Desktop.</h3>
+
+                         <form action="~/QBDesktop/DownloadCompanyFile" method="post" target="_blank">
+            <button class="GreenButton">Download</button>
+
+        </form>
+
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

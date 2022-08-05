@@ -31,6 +31,7 @@ namespace QBOTest.Partners
         public virtual DateTime? QuickBooksLastUpdatedTime { get; set; }
 
         public virtual string QuickBooksDesktopId { get; set; }
+        public virtual bool IsQBSynced{ get; set; }
 
         #region FKs
 

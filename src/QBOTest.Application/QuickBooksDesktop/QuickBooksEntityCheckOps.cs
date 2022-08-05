@@ -1,4 +1,5 @@
-﻿using Abp.Domain.Repositories;
+﻿using Abp.Dependency;
+using Abp.Domain.Repositories;
 using QBOTest.Partners;
 using QBOTest.QuickBooksDesktop.Dto;
 using System;
@@ -13,7 +14,7 @@ using static QBOTest.QuickBooksDesktop.RequestController;
 namespace QBOTest.QuickBooksDesktop
 {
 
-	public class QuickBooksEntityCheckOps : BaseClass
+	public class QuickBooksEntityCheckOps : BaseClass,ITransientDependency
 	{
 		private readonly string customersIds = "CustomersIds";
 		private readonly IRepository<Partner, Guid> _partnerRepository;

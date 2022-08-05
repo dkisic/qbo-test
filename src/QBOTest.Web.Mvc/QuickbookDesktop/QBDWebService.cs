@@ -1,48 +1,60 @@
-﻿using Abp.Domain.Repositories;
+﻿using Abp;
+using Abp.Dependency;
+using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
+using Abp.Runtime.Session;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QBOTest.Partners;
 using QBOTest.QuickBooksDesktop;
+using QBOTest.QuickBooksDesktop.Dto;
 using QBOTest.Users;
 using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static QBOTest.QuickBooksDesktop.RequestController;
 
 namespace QBOTest.Web.QuickbookDesktop
 {
 
-	public class QBDWebService : IQBDWebService
+	[UnitOfWork]
+	public class QBDWebService : IQBDWebService, ITransientDependency
 	{
 		//Private Variables
 		private readonly IUserAuthentication _authentication;
 		public readonly IRepository<Partner, Guid> _partnerRepository;
 		private readonly IController controller;
-		public QBDWebService(IUserAuthentication authentication, IRepository<Partner, Guid> partnerRepository)
+
+
+		public QBDWebService(IUserAuthentication authentication, IRepository<Partner, Guid> partnerRepository, IController _controller)
 		{
 			_partnerRepository = partnerRepository;
 			_authentication = authentication;
-			controller = new RequestController(_partnerRepository);
+			controller = _controller;
 		}
 
 		private readonly BaseClass bClass = new BaseClass();
-		
+
 		private readonly ISessionPool sessionPool = new MemorySession();
 
 		private readonly IContainer components = null;
 
 
 
-		
 
 
 
 
 
-		public void DoAuthenticate(string strUserName, string strPassword, ref string[] authReturn)
+
+		public int DoAuthenticate(string strUserName, string strPassword)
 		{
 			//authenticator.CreateAuthentication(null);
-			authReturn[0] = (string)_authentication.AuthenticateUser(strUserName, strPassword);
+			var getval = _authentication.AuthenticateUser(strUserName, strPassword);
+
+			return (int)getval;
+
 		}
 
 
@@ -71,7 +83,13 @@ namespace QBOTest.Web.QuickbookDesktop
 			try
 			{
 
-				DoAuthenticate(strUserName, strPassword, ref authReturn);
+				var TenantID = DoAuthenticate(strUserName, strPassword);
+				if (TenantID != 0)
+				{
+					authReturn[0] = Guid.NewGuid().ToString();
+					sess.SetProperty("TenantId", TenantID);
+				}
+
 				//if (CheckMatchDataSetting(sess) != true && CheckImportSetting(sess) != true &&
 				//	CheckTaxImportSetting(sess) != true)
 				//{
@@ -107,7 +125,7 @@ namespace QBOTest.Web.QuickbookDesktop
 		}
 
 
-		public string sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName,
+		public async Task<string> sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName,
 		string qbXMLCountry, int qbXMLMajorVers, int qbXMLMinorVers)
 		{
 			var sess = sessionPool.GetCache(ticket);
@@ -121,15 +139,8 @@ namespace QBOTest.Web.QuickbookDesktop
 				sess.DefineSession(strCompanyFileName, strHCPResponse, qbXMLCountry, (short)qbXMLMajorVers,
 					(short)qbXMLMinorVers);
 
-				//if (!string.IsNullOrEmpty(strHCPResponse) && isImport == false)
-				//	CheckInvoicesFromDataSetting(
-				//		sess); //when strHCPResponse is not null its mean its first call so get Data by date range for syn.
 
-
-				//if (isImport)
-					request = controller.GetNextActionForImport(sess);
-				//else
-					//request = controller.GetNextAction(sess);
+					request = await controller.GetNextActionForImport(sess);
 
 
 				sessionPool.Put(ticket, sess);
@@ -146,7 +157,7 @@ namespace QBOTest.Web.QuickbookDesktop
 		}
 
 
-		public async Task<int> receiveResponseXMLAsync(string ticket, string response, string hresult, string message)
+		public async Task<int> receiveResponseXML(string ticket, string response, string hresult, string message)
 		{
 			var sess = sessionPool.GetCache(ticket);
 			try
@@ -161,10 +172,9 @@ namespace QBOTest.Web.QuickbookDesktop
 				var isImport = false;
 				int retVal;
 
-				retVal = await controller.ProcessLastActionForImportAsync(sess, response);
-				//retVal = isImport
-				//	? controller.ProcessLastActionForImportAsync(sess, response)
-				//	: controller.ProcessLastAction(sess, response);
+				
+					retVal = await controller.ProcessLastActionForImportAsync(sess, response);
+				
 				sessionPool.Put(ticket, sess);
 
 
@@ -226,6 +236,29 @@ namespace QBOTest.Web.QuickbookDesktop
 			if (hResult.Equals(""))
 				return false;
 			return true;
+		}
+
+
+
+		public string closeConnection(string ticket)
+		{
+			var sess = sessionPool.GetCache(ticket);
+			var retVal = "OK";
+			sessionPool.Invalidate(ticket);
+			return retVal;
+		}
+
+
+		public string getLastError(string ticket)
+		{
+			
+			var sess = sessionPool.GetCache(ticket);
+			string retVal;
+			
+				retVal = sess.GetProperty("LastError") != null ? sess.GetProperty("LastError").ToString() : "Error!";
+			sessionPool.Invalidate(ticket);
+			
+			return retVal;
 		}
 	}
 }

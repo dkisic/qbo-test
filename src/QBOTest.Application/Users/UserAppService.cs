@@ -252,18 +252,20 @@ namespace QBOTest.Users
 
 		[AbpAllowAnonymous]
 		[UnitOfWork]
-		public async Task<bool> ValidateUser(string Username, string Password)
+		public async Task<int> ValidateUser(string Username, string Password)
 		{
-
-			var getUser = _userRepository.FirstOrDefault(x => x.UserName == Username);
-			if (getUser != null)
+			using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MustHaveTenant,AbpDataFilters.MayHaveTenant))
 			{
-				return await _userManager.CheckPasswordAsync(getUser, Password);
+				var getUser = _userRepository.FirstOrDefault(x => x.UserName == Username);
+				if (getUser != null)
+				{
+					if (await _userManager.CheckPasswordAsync(getUser, Password))
+					{
+						return getUser.TenantId == null ? 0 : getUser.TenantId.Value;
+					}
+				}
+				return 0;
 			}
-			
-			return false;
-
-
 		}
 
 

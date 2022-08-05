@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace QBOTest.Web.QuickbookDesktop
 {
@@ -7,11 +8,17 @@ namespace QBOTest.Web.QuickbookDesktop
 	public interface IQBDWebService
 	{
 		[OperationContract]
-		void DoAuthenticate(string strUserName, string strPassword, ref string[] authReturn);
+		int DoAuthenticate(string strUserName, string strPassword);
 		[OperationContract]
 		string[] authenticate(string strUserName, string strPassword);
 		[OperationContract]
-		string sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName,
+		Task<string> sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName,
 		string qbXMLCountry, int qbXMLMajorVers, int qbXMLMinorVers);
+		[OperationContract]
+		Task<int> receiveResponseXML(string ticket, string response, string hresult, string message);
+		[OperationContract]
+		string closeConnection(string ticket);
+		[OperationContract]
+		string getLastError(string ticket);
 	}
 }

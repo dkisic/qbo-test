@@ -75,7 +75,7 @@ namespace QBOTest.Web.Startup
             services.AddScoped<IWebResourceManager, WebResourceManager>();
 
             services.AddSoapCore();
-            services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAuthentication>(), x.GetRequiredService<IRepository<Partner, Guid>>()));
+            //services.TryAddSingleton<IQBDWebService>(x=> new QBDWebService(x.GetRequiredService<IUserAuthentication>(), x.GetRequiredService<IRepository<Partner, Guid>>()));
             services.AddMvc();
 
             services.AddSoapExceptionTransformer((ex) => ex.Message);
