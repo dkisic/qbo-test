@@ -13,6 +13,12 @@ namespace QBOTest.Migrations
                 table: "Partners",
                 type: "nvarchar(200)",
                 nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "IsQBSynced",
+                table: "Partners",
+                type: "bit",
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -20,6 +26,10 @@ namespace QBOTest.Migrations
             migrationBuilder.DropColumn(
                 name: "QuickBooksDesktopId",
                 table: "Partners");
+
+            migrationBuilder.DropColumn(
+              name: "IsQBSynced",
+              table: "Partners");
         }
     }
 }

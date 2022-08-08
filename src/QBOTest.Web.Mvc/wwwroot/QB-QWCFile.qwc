@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<QBWCXML>
+<AppName>QBD Integrator</AppName>
+<AppID></AppID>
+<AppURL>https://localhost:44312/QBDService.asmx</AppURL>
+<AppDescription> Easy Integration Between App and Quickbooks!</AppDescription>
+<AppSupport>https://localhost:44312</AppSupport>
+<UserName>admin</UserName>
+<OwnerID>{767c9ea0-39d4-4e53-9d02-862f3bfb0470}</OwnerID >
+<FileID>{4dfc6e84-c0c0-4f8f-b238-6d32b769fb7f}</FileID >
+<QBType>QBFS</QBType>
+<Notify>false</Notify>
+<Scheduler></Scheduler>
+<IsReadOnly>false</IsReadOnly>
+</QBWCXML>
