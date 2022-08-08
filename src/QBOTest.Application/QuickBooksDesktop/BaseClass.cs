@@ -70,17 +70,7 @@ namespace QBOTest.QuickBooksDesktop
 
 
 
-		public void SetQueryListIds(QuickBookSession sess, List<UtilityClass> list)
-		{
-			sess.SetProperty(QueryingListIDs, list);
-		}
-
-		public List<UtilityClass> GetQueryListIds(QuickBookSession sess)
-		{
-			var queryingLists = sess.GetProperty(QueryingListIDs);
-			var list = queryingLists != null ? (List<UtilityClass>)queryingLists : new List<UtilityClass>();
-			return list;
-		}
+	
 
 
 		public void RemoveQueryListIds(QuickBookSession sess)

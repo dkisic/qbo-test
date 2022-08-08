@@ -646,5 +646,20 @@ namespace QBOTest.QuickBooksDesktop
 		#endregion
 
 
+		#region Helpers
+
+		private void SetQueryListIds(QuickBookSession sess, List<UtilityClass> list)
+		{
+			sess.SetProperty(QueryingListIDs, list);
+		}
+
+		private List<UtilityClass> GetQueryListIds(QuickBookSession sess)
+		{
+			var queryingLists = sess.GetProperty(QueryingListIDs);
+			var list = queryingLists != null ? (List<UtilityClass>)queryingLists : new List<UtilityClass>();
+			return list;
+		}
+
+		#endregion
 	}
 }

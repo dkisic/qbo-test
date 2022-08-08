@@ -32,53 +32,26 @@
                             <legend>Instructions</legend>
 
                             <div style="font-size:small;margin-top:1%">
-                                <header>Please read the following instructions for integrating SkyBoss with your QuickBooks Desktop:</header>
+                                <header>Please read the following instructions for integrating with your QuickBooks Desktop:</header>
                                 <ol>
 
 
                                     <li style="margin-bottom:1%">If you have not installed Quickbooks WebConnector on your machine on which your Quickbooks Desktop is running, please <a href="https://developer.intuit.com/app/developer/qbdesktop/docs/get-started/get-started-with-quickbooks-web-connector#quickbooks-products-supported-by-web-connector" target="_blank"> Download QuickBooks Web Connector </a> and follow the instructions on the given link for installation. </li>
-                                    <li style="margin-bottom:1%">Once installed, return to the SkyBoss import export Desktop screen and enter your account information from QuickBooks (from Charts of Accounts) in the <b>"Import/Export Setting Section"</b>. If you have not entered it, Export will not run correctly</li>
-                                    <li style="margin-bottom:1%">After you have entered your account information, download the Company file(.qwc) from SkyBoss (Select Download Option above the instruction section for downloading). </li>
+                                   <li style="margin-bottom:1%">Download the Company file(.qwc) (Select Download Option above the instruction section for downloading). </li>
                                     <li style="margin-bottom:1%">Open your QuickBooks Desktop Application and go to top menu <b>File</b> &gt;&gt; <b>Update Services&lt;</b>&gt; and select. It will open WebConnector in a new popup window.</li>
 
-                                    <li style="margin-bottom:1%;margin-top:1%">Select Add an Application in WebConnector it will ask for choosing a file(.qwc). Select the file (.qwc) which you have downloaded from SkyBoss(as in step 3)</li>
+                                    <li style="margin-bottom:1%;margin-top:1%">Select Add an Application in WebConnector it will ask for choosing a file(.qwc). Select the file (.qwc) which you have downloaded from App</li>
                                     <li style="margin-bottom:1%">After selecting the file, WebConnector will open an <b>"Authorize New Web Service" </b>popup window. Select <b>"Ok"</b>.</li>
                                     <li style="margin-bottom:1%">The WebConnector will then display the <b>"Application Certification"</b>.&nbsp; Select <b>"Yes"</b> on the prompt each time it comes up, then select <b>Continue</b>.</li>
                                     <li style="margin-bottom:1%">An "Access Confirmation" will be asked from WebConnector. Select "Done".</li>
-                                    <li style="margin-bottom:1%">After setting up SkyBoss with WebConnector, enter your SkyBoss password under the password section and then press the <b>"Enter" button</b>.</li>
-                                    <li style="margin-bottom:1%">Select the checkbox to the left of your SkyBoss QuickBooks Integrator. and then select "Update Selected". Import/Export will Start according to your entered settings.</li>
+                                    <li style="margin-bottom:1%">After setting up the WebConnector, enter your password under the password section and then press the <b>"Enter" button</b>.</li>
+                                    <li style="margin-bottom:1%">Select the checkbox to the left of your QuickBooks Integrator. and then select "Update Selected". Import/Export will Start according to your entered settings.</li>
 
                                     <li style="margin-bottom:1%;margin-top:1%">When the Import/Export Process gets Started Don't Close your QuickBooks application otherwise the process will stop.</li>
                                     <li style="margin-bottom:1%">During the Export Process make sure that you don't have any open records in the Edit window related to Customer, Employee, Item &amp; Services, Vendor and their transactions in your QuickBooks application otherwise that records will not update.</li>
                                 </ol>
+                                                                
 
-
-                                <header>Import data from QuickBooks to SkyBoss:</header>
-                                <ol>
-                                    <li style="margin-bottom:1%">When you first sync between QuickBooks and SkyBoss, SkyBoss will provide an option to import data from QuickBooks into SkyBoss with a prompt <b>"Do You Want To Import Data From QuickBooks"</b></li>
-                                    <li style="margin-bottom:1%">If you want to Import Data from QuickBooks to SkyBoss select the Import option. When you run QuickBooks WebConnector, SkyBoss will import data from QuickBooks. When the Import is complete, SkyBoss will then export data to your QuickBooks.</li>
-                                </ol>
-
-                                <header>To Export to QuickBooks Desktop:</header>
-                                <ol>
-                                    <li style="margin-bottom:1%">Enter your Chart of Account information from your QuickBooks in the Import/Export setting Section. If you have not entered the correct information, the export will not work correctly</li>
-                                </ol>
-                                <header>To Match Data With QuickBooks Desktop:</header>
-                                <ol>
-                                    <li style="margin-bottom:1%">In case if you have entered the some data(Only customers) in SkyBoss manually and you don't want data duplication, The match data feature will search for its matching data in Quickbooks and will sync it. </li>
-                                    <li style="margin-bottom:1%">To Match Data select <b> Do You Want To Match Data with QuickBooks</b> in <b>"Import/Export Setting Section"</b> then select <b>Update Selected</b> in WebConnector for Exporting.</li>
-                                    <li style="margin-bottom:1%">Whenever the option <b>Do You Want To Match Data with QuickBooks</b> is selected and you selected <b>Update Selected</b> in WebConnector it will always do Match data</li>
-                                    <li style="margin-bottom:1%">After match data is completed and you want to start Exports/Import Process unselect the option "Do You Want To Match Data with QuickBooks" and start the Process.</li>
-
-                                </ol>
-
-                                <header>In case of any Error or Problems occured during Import/Export please send us the following log files from your machine to investigate issues:   </header>
-                                <ol>
-                                    <li style="margin-bottom:1%"> C:\ProgramData\Intuit\QuickBooks\qbsdklog.txt</li>
-                                    <li style="margin-bottom:1%"> C:\ProgramData\Intuit\QuickBooks\qbsdkold.txt</li>
-
-                                    Please Make sure that when you face any issue Copy these log files at that time as quickbooks will override that if furhter Import/Export run.
-                                </ol>
                             </div>
 
                         </fieldset>
